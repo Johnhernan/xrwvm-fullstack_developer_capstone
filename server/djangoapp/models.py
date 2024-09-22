@@ -13,6 +13,7 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 # - Any other fields you would like to include in car make model
 # - __str__ method to print a car make object
 class CarMake(models.Model):
+    car_make_id = models.UUIDField(primary_key=True)
     name =  models.CharField(max_length=100)
     description = models.CharField(max_length=250)
 
@@ -37,13 +38,10 @@ class CarModel(models.Model):
         ("wagon", "Wagon")
     )
     name = models.CharField(max_length=100)
-    year = models.DateField(validators=[
-            MaxValueValidator(2023),
-            MinValueValidator(2015)
-        ])
+    year = models.DateField()
     type = models.CharField(max_length=50, choices=CAR_TYPES)
     dealer_id = models.IntegerField()
-    make = models.ForeignKey(CarMake, on_delete=models.CASCADE)
+    car_make = models.ForeignKey(CarMake, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name
