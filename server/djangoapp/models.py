@@ -13,9 +13,8 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 # - Any other fields you would like to include in car make model
 # - __str__ method to print a car make object
 class CarMake(models.Model):
-    car_make_id = models.UUIDField(primary_key=True)
-    name =  models.CharField(max_length=100)
-    description = models.CharField(max_length=250)
+    name = models.CharField(max_length=100)
+    description = models.TextField()
 
     def __str__(self):
         return self.name
@@ -31,17 +30,23 @@ class CarMake(models.Model):
 # - Any other fields you would like to include in car model
 # - __str__ method to print a car make object
 
+
 class CarModel(models.Model):
-    CAR_TYPES =(
-        ("sedan", "Sedan"),
-        ("suv", "SUV"),
-        ("wagon", "Wagon")
-    )
+    car_make = models.ForeignKey(CarMake, on_delete=models.CASCADE)  # Many-to-One relationship
     name = models.CharField(max_length=100)
-    year = models.DateField()
-    type = models.CharField(max_length=50, choices=CAR_TYPES)
-    dealer_id = models.IntegerField()
-    car_make = models.ForeignKey(CarMake, on_delete=models.CASCADE)
+    CAR_TYPES = [
+        ('SEDAN', 'Sedan'),
+        ('SUV', 'SUV'),
+        ('WAGON', 'Wagon'),
+        # Add more choices as required
+    ]
+    type = models.CharField(max_length=10, choices=CAR_TYPES, default='SUV')
+    year = models.IntegerField(default=2023,
+        validators=[
+            MaxValueValidator(2023),
+            MinValueValidator(2015)
+        ])
+    # Other fields as needed
 
     def __str__(self):
-        return self.name
+        return self.name  # Return the name as the string representation
